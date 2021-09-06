@@ -13,7 +13,6 @@ f.close()
 
 # if the user wants a random show
 if ( term == 'show'):
-    print('random show')
     chosen_index = randint(1, len( lines ) - 1 )
     chosen_line = lines[chosen_index].split(',')
     show = chosen_line.pop(0)

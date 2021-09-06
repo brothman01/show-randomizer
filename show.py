@@ -20,9 +20,8 @@ if ( term == 'show'):
     season = randint(1, len( chosen_line )  )
     season = season - 1
     episode = randint(1, int( chosen_line[season] ) )
-    # if the user wants a random episode from a specific show in the datafile
-else:
-    l = 0
+    print(show)
+else: # if the user wants a random episode from a specific show
     for line in lines:
         if (line.startswith(str(term))):
             chosen_index = l
@@ -30,7 +29,5 @@ else:
             show = chosen_line.pop(0)
             season = randint(1, len( chosen_line )  )
             season = season - 1
-            episode = randint(1, int( chosen_line[season] ) )
-        l = l + 1
-        
-print(show + ' s' + str(season) + 'e' + str(episode))
+            episode = randint(1, int( chosen_line[season] ) )       
+    print(show + ' s' + str(season) + 'e' + str(episode))

@@ -1,36 +1,54 @@
+# Ben Rothman - Show Randomizer
+# this program reads the show info in from the csv file and gives a random show 
+# out of the selected shows or a random episode of a random season of the show
+# specified by the user based on what was chosen with the parameters.
 from random import randint 
 import sys
+import csv
+import pprint
+
+# dictionary of all shows
+shows = dict()
 
 # convert args into usable code
 arg_names = ['command', 'term']
-# args = dict(zip(arg_names, sys.argv))
-# term = args['term']
 args = tuple(sys.argv)
 term = args[1]
 
-# read data file into program
-f = open('data.txt', "r")
-lines = f.readlines()
-f.close()
+# Support Functions
+def keyList(dict):
+    list = []
+    for key in dict.keys():
+        list.append(key)   
+    return list
 
-# if the user wants a random show
-if ( term == 'show'):
-    chosen_index = randint(1, len( lines ) - 1 )
-    chosen_line = lines[chosen_index].split(',')
-    show = chosen_line.pop(0)
-    season = randint(1, len( chosen_line )  )
-    season = season - 1
-    episode = randint(1, int( chosen_line[season] ) )
-    print(show)
+# read show information into a dict
+with open('data.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            if row[0] == '#Title':
+                continue
+            else:
+                title = row[0]
+                seasons = len(row) + 1
+                for x in range(1, len(row)):
+                    if title in shows.keys():
+                        shows[title].append(row[x])
+                    else:
+                        shows[title] = [row[x]]
+
+
+
+##### Program #####
+
+if ( term == 'show'): # if the user wants a random show
+    index = randint(1, len( shows.keys() ) - 1 )
+    print(keyList(shows)[index])
 else: # if the user wants a random episode from a specific show
-    index = 0
-    for line in lines:
-        if (line.startswith(str(term))):
-            chosen_index = index
-            chosen_line = lines[chosen_index].split(',')
-            show = chosen_line.pop(0)
-            season = randint(1, len( chosen_line )  )
-            season = season - 1
-            episode = randint(1, int( chosen_line[season] ) )  
-        index = index + 1
-    print(show + ' s' + str(season) + 'e' + str(episode))
+    title = term
+    info = shows[term]
+    season = randint(1, len( info )  )
+    episode = randint(1, int( info[season].split(':')[1] ) )  
+    print(title + ' s' + str(season) + 'e' + str(episode))
+
+##################

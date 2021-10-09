@@ -15,6 +15,31 @@ arg_names = ['command', 'term']
 args = tuple(sys.argv)
 term = args[1]
 
+# Class Definitions
+class Show:
+    def __init__(self, row):
+        self.title = row[0]
+        self.seasons = list()
+        for x in row:
+            if x == self.title:
+                continue
+            elif len(self.seasons) > 0:
+                (self.seasons).append(x)
+            else:
+                self.seasons = [x]
+
+    def getSeasons(self):
+        return self.seasons
+    
+    def getEpisodes(self, season):
+        return self.seasons[season - 1]
+    
+    def getRandomSeason(self):
+        return randint(0, len( self.seasons) )
+
+    def __str__(self):
+        return self.title + ' ' + str(len(self.seasons)) + ' seasons'
+
 # Support Functions
 def keyList(dict):
     list = []
@@ -22,33 +47,31 @@ def keyList(dict):
         list.append(key)   
     return list
 
-# read show information into a dict
-with open('data.csv', newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        for row in reader:
-            if row[0] == '#Title':
-                continue
-            else:
-                title = row[0]
-                seasons = len(row) + 1
-                for x in range(1, len(row)):
-                    if title in shows.keys():
-                        shows[title].append(row[x])
-                    else:
-                        shows[title] = [row[x]]
+def readShows(path):
+    retval = dict()
+    with open(path, newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            for row in reader:
+                if row[0] == '#Title':
+                    continue
+                else:
+                    show = Show(row)
+                    retval[row[0]] = show
+    return retval
 
 
 
 ##### Program #####
+shows = readShows('data.csv')
 
 if ( term == 'show'): # if the user wants a random show
-    index = randint(1, len( shows.keys() ) - 1 )
-    print(keyList(shows)[index])
+    print(keyList(shows)[randint(1, len( shows.keys() ) - 1 )])
 else: # if the user wants a random episode from a specific show
     title = term
-    info = shows[term]
-    season = randint(1, len( info )  )
-    episode = randint(1, int( info[season].split(':')[1] ) )  
+    show = shows[term]
+    season = show.getRandomSeason()
+    # seasonInfo = show.getEpisodes(season)
+    episode = randint(1, int( show.getEpisodes(season).split(':')[1] ) )  
     print(title + ' s' + str(season) + 'e' + str(episode))
 
 ##################

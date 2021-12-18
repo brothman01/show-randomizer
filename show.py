@@ -6,6 +6,11 @@ from random import randint
 import sys
 import csv
 import pprint
+import os
+
+path = os.path.dirname(__file__) ## directory of file
+# os.path.dirname(os.path.dirname(file)) ## directory of directory of file
+os.chdir(path)
 
 # dictionary of all shows
 shows = dict()
@@ -67,8 +72,12 @@ shows = readShows('data.csv')
 if ( term == 'show'): # if the user wants a random show
     print(keyList(shows)[randint(1, len( shows.keys() ) - 1 )])
 else: # if the user wants a random episode from a specific show
-    title = term
-    show = shows[term]
+    title = ' '.join(args[1:])
+    try:
+        show = shows[title]
+    except:
+        print(title,'is not in the list of shows')
+
     season = show.getRandomSeason()
     # seasonInfo = show.getEpisodes(season)
     episode = randint(1, int( show.getEpisodes(season).split(':')[1] ) )  

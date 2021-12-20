@@ -10,7 +10,7 @@ import os
 
 path = os.path.dirname(__file__) ## directory of file
 # os.path.dirname(os.path.dirname(file)) ## directory of directory of file
-os.chdir(path)
+# os.chdir(path)
 
 # dictionary of all shows
 shows = dict()

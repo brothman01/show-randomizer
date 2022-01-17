@@ -15,11 +15,6 @@ path = os.path.dirname(__file__) ## directory of file
 # dictionary of all shows
 shows = dict()
 
-# convert args into usable code
-arg_names = ['command', 'term']
-args = tuple(sys.argv)
-term = args[1]
-
 # Class Definitions
 class Show:
     def __init__(self, row):
@@ -67,6 +62,12 @@ def readShows(path):
 
 
 ##### Program #####
+# convert args into usable code
+arg_names = ['command', 'term']
+args = tuple(sys.argv)
+term = args[1]
+
+# read the shows and create a list of 'Show's
 shows = readShows('data.csv')
 
 if ( term == 'show'): # if the user wants a random show
@@ -76,10 +77,10 @@ else: # if the user wants a random episode from a specific show
     try:
         show = shows[title]
     except:
-        print(title,'is not in the list of shows')
+        print('"',title,'" is not in the list of shows',sep='')
 
     season = show.getRandomSeason()
-    # seasonInfo = show.getEpisodes(season)
+#     # seasonInfo = show.getEpisodes(season)
     episode = randint(1, int( show.getEpisodes(season).split(':')[1] ) )  
     print(title + ' s' + str(season) + 'e' + str(episode))
 

@@ -1,19 +1,12 @@
 # Ben Rothman - Show Randomizer
-# this program reads the show info in from the csv file and gives a random show 
+# this program reads the show info in from the csv file and gives a random show
 # out of the selected shows or a random episode of a random season of the show
 # specified by the user based on what was chosen with the parameters.
-from random import randint 
+from random import randint
 import sys
 import csv
 import pprint
 import os
-
-path = os.path.dirname(__file__) ## directory of file
-# os.path.dirname(os.path.dirname(file)) ## directory of directory of file
-# os.chdir(path)
-
-# dictionary of all shows
-shows = dict()
 
 # Class Definitions
 class Show:
@@ -30,10 +23,10 @@ class Show:
 
     def getSeasons(self):
         return self.seasons
-    
+
     def getEpisodes(self, season):
         return self.seasons[season - 1]
-    
+
     def getRandomSeason(self):
         return randint(0, len( self.seasons) )
 
@@ -44,7 +37,7 @@ class Show:
 def keyList(dict):
     list = []
     for key in dict.keys():
-        list.append(key)   
+        list.append(key)
     return list
 
 def readShows(path):
@@ -62,26 +55,40 @@ def readShows(path):
 
 
 ##### Program #####
-# convert args into usable code
+shell_mode = True # by default
+
+# path to this file
+path = os.path.dirname(__file__)
+
+# dictionary of all shows
+shows = dict()
+
+#instantiate variable
+title = ''
+
+# get input and decide what to do
 arg_names = ['command', 'term']
 args = tuple(sys.argv)
-term = args[1]
+if shell_mode == True:
+    term = input('args: ')
+    title = term
+else:
+    term = args[1]
 
 # read the shows and create a list of 'Show's
 shows = readShows('data.csv')
 
+# get the show with title specified in the input
 if ( term == 'show'): # if the user wants a random show
     print(keyList(shows)[randint(1, len( shows.keys() ) - 1 )])
-else: # if the user wants a random episode from a specific show
-    title = ' '.join(args[1:])
+else:
     try:
         show = shows[title]
+        season = show.getRandomSeason()
+        episode = randint(1, int( show.getEpisodes(season).split(':')[1] ) )
+        print(title + ' s' + str(season) + 'e' + str(episode))
     except:
         print('"',title,'" is not in the list of shows',sep='')
 
-    season = show.getRandomSeason()
-#     # seasonInfo = show.getEpisodes(season)
-    episode = randint(1, int( show.getEpisodes(season).split(':')[1] ) )  
-    print(title + ' s' + str(season) + 'e' + str(episode))
 
 ##################
